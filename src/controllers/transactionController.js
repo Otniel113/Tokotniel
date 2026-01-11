@@ -39,7 +39,6 @@ export const createTransaction = async (req, res) => {
     const { service_code } = req.body;
     const email = req.user.email;
 
-    // 1. Get User
     const user = await User.findByEmail(email);
      if (!user) {
          return res.status(401).json({
@@ -49,7 +48,6 @@ export const createTransaction = async (req, res) => {
         });
     }
 
-    // 2. Get Service
     const service = await Service.findByCode(service_code);
     if (!service) {
       return res.status(400).json({
@@ -59,37 +57,16 @@ export const createTransaction = async (req, res) => {
       });
     }
 
-    // 3. Check Balance
     if (user.balance < service.service_tariff) {
-      // The requirement doesn't explicitely specify "Insufficient Balance" response status logic other than "no transaction".
-      // Usually it's 400 with a message.
-      // DDL.sql comment for transactions table: "(Boleh NULL jika transaksinya Topup)".
-      // But for response format for insufficient balance, usually:
-      // status: 102? or different?
-      // I'll stick to 400 and a descriptive message.
-      // Wait, request says: "If it insufficent then no transaction".
-      // What is the response? Request doesn't provide "Insufficient Balance" JSON example.
-      // I will assume standard error response.
-      // However, typical competitive programming/tasks would have a specific status for this.
-      // But based on provided info, I only have 102 (Service not found) and 108 (Auth).
-      // I'll create a new error response or reuse one if appropriate.
-      // Let's use 400 with status 102 (or maybe 103/104?)
-      // Actually, looking at previous similar projects (Nutech usually), it might be separate.
-      // But without instruction, I'll allow myself to return 400.
       return res.status(400).json({
-        status: 102, // Reusing 102 as "Bad Request" generic or create new
+        status: 102,
         message: "Saldo tidak mencukupi",
         data: null
       });
     }
 
-    // 4. Create Transaction
     const invoiceNumber = generateInvoiceNumber();
     
-    // Deduct balance
-    // Note: User.updateBalance adds amount. To deduct, pass negative?
-    // User.js: 'UPDATE users SET balance = balance + ? ...'
-    // So passing negative service_tariff works.
     await User.updateBalance(email, -service.service_tariff);
 
     const transactionData = {
@@ -103,9 +80,6 @@ export const createTransaction = async (req, res) => {
     
     await Transaction.create(transactionData);
 
-    // 5. Response
-    // Need timestamp. Since we just inserted, we can generate one or fetch.
-    // For specific requirement "created_on" in response, I can use the current time.
     const createdOn = new Date();
 
     res.status(200).json({
@@ -117,7 +91,7 @@ export const createTransaction = async (req, res) => {
         service_name: service.service_name,
         transaction_type: 'PAYMENT',
         total_amount: service.service_tariff,
-        created_on: createdOn // or formatted ISO string if needed, requirement shows ISO format '2023-08-17T10:10:10.000Z'
+        created_on: createdOn
       }
     });
 
@@ -136,10 +110,6 @@ export const topUp = async (req, res) => {
     const { top_up_amount } = req.body;
     const email = req.user.email;
 
-    // Validation
-    // Check if amount is number and >= 0 (Requirement says "not less than 0", usually > 0 is better but complying with request)
-    // "Amount only can be number and it can not less than 0" -> >= 0.
-    // If input is "abc", Number("abc") is NaN.
     if (typeof top_up_amount !== 'number' || top_up_amount < 0) {
       return res.status(400).json({
         status: 102,
@@ -157,11 +127,8 @@ export const topUp = async (req, res) => {
         });
     }
 
-    // Process Top Up
-    // 1. Update Balance
     await User.updateBalance(email, top_up_amount);
     
-    // 2. Create Transaction Record
     const invoiceNumber = generateInvoiceNumber();
     await Transaction.create({
         invoice_number: invoiceNumber,
@@ -171,9 +138,6 @@ export const topUp = async (req, res) => {
         total_amount: top_up_amount
     });
 
-    // 3. Get Updated Balance (or just calculate)
-    // To be safe, fetch again or add local. Adding local is faster, but fetching ensures consistency.
-    // Since we just updated, let's fetch.
     const updatedUser = await User.findByEmail(email);
 
     res.status(200).json({

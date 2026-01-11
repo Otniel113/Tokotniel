@@ -12,8 +12,7 @@ export const getServices = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      status: 120, // Internal Server Error placeholder status code? Or just standard 500? 
-      // The requirement didn't specify 500 format. I will stick to a similar JSON structure.
+      status: 500, // Internal Server Error
       message: "Internal Server Error",
       data: null
     });

@@ -11,9 +11,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Swagger UI with clean light theme
 const swaggerOptions = {
-  customCss: '.swagger-ui .topbar { display: none }', // Optional: Remove the top bar for a cleaner look
+  customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: "Tokotniel API Docs",
   explorer: true
 };
