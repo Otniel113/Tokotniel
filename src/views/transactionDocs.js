@@ -128,3 +128,95 @@
  *                   nullable: true
  *                   example: null
  */
+
+/**
+ * @swagger
+ * /transaction:
+ *   post:
+ *     summary: Create a transaction
+ *     tags: [Module Transaction]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - service_code
+ *             properties:
+ *               service_code:
+ *                 type: string
+ *                 example: PULSA
+ *     responses:
+ *       200:
+ *         description: Transaction successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 0
+ *                 message:
+ *                   type: string
+ *                   example: Transaksi berhasil
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     invoice_number:
+ *                       type: string
+ *                       example: INV17082023-001
+ *                     service_code:
+ *                       type: string
+ *                       example: PLN_PRABAYAR
+ *                     service_name:
+ *                       type: string
+ *                       example: PLN Prabayar
+ *                     transaction_type:
+ *                       type: string
+ *                       example: PAYMENT
+ *                     total_amount:
+ *                       type: integer
+ *                       example: 10000
+ *                     created_on:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2023-08-17T10:10:10.000Z
+ *       400:
+ *         description: Bad request (Service not found or Insufficient Balance)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 102
+ *                 message:
+ *                   type: string
+ *                   example: Service ataus Layanan tidak ditemukan
+ *                 data:
+ *                   type: object
+ *                   nullable: true
+ *                   example: null
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 108
+ *                 message:
+ *                   type: string
+ *                   example: Token tidak tidak valid atau kadaluwarsa
+ *                 data:
+ *                   type: object
+ *                   nullable: true
+ *                   example: null
+ */
