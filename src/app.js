@@ -4,6 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 import authRoutes from './routes/authRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
+import transactionRoutes from './routes/transactionRoutes.js';
 
 const app = express();
 
@@ -28,5 +29,6 @@ app.get('/', (req, res) => {
 
 app.use('/', authRoutes);
 app.use('/', serviceRoutes);
+app.use('/', transactionRoutes);
 
 export default app;
