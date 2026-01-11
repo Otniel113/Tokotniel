@@ -26,6 +26,7 @@
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: user@example.com
  *               first_name:
  *                 type: string
  *                 example: John
@@ -39,8 +40,38 @@
  *     responses:
  *       200:
  *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 0
+ *                 message:
+ *                   type: string
+ *                   example: Registrasi berhasil silahkan login
+ *                 data:
+ *                   type: object
+ *                   nullable: true
+ *                   example: null
  *       400:
- *         description: Bad request
+ *         description: Bad request (Validation error)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 102
+ *                 message:
+ *                   type: string
+ *                   example: Paramter email tidak sesuai format atau password kurang dari 8 karakter
+ *                 data:
+ *                   type: object
+ *                   nullable: true
+ *                   example: null
  */
 
 /**
@@ -62,7 +93,7 @@
  *               email:
  *                 type: string
  *                 format: email
- *                 example: john.doe@example.com
+ *                 example: user@example.com
  *               password:
  *                 type: string
  *                 format: password
@@ -75,8 +106,50 @@
  *             schema:
  *               type: object
  *               properties:
- *                 token:
+ *                 status:
+ *                   type: integer
+ *                   example: 0
+ *                 message:
  *                   type: string
+ *                   example: Login Sukses
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     token:
+ *                       type: string
+ *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Bad request (Validation error)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 102
+ *                 message:
+ *                   type: string
+ *                   example: Paramter email tidak sesuai format
+ *                 data:
+ *                   type: object
+ *                   nullable: true
+ *                   example: null
  *       401:
  *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 103
+ *                 message:
+ *                   type: string
+ *                   example: Username atau password salah
+ *                 data:
+ *                   type: object
+ *                   nullable: true
+ *                   example: null
  */
