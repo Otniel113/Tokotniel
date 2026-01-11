@@ -13,6 +13,14 @@ class User {
     const [rows] = await pool.execute('SELECT * FROM users WHERE email = ?', [email]);
     return rows[0];
   }
+
+  static async updateBalance(email, amount) {
+    const [result] = await pool.execute(
+      'UPDATE users SET balance = balance + ? WHERE email = ?',
+      [amount, email]
+    );
+    return result;
+  }
 }
 
 export default User;
