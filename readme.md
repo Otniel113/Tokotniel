@@ -12,7 +12,7 @@ This project is a Backend implementation for the Nutech Integrasi Recruitment Pr
 
 ## 🚀 Deployment
 
-- **Link**: [Coming Soon]
+- **Link**: http://tokotniel.onrender.com/
 
 ## ⚙️ Initial Setup
 
